@@ -36,7 +36,7 @@ export async function getStaticProps() {
   // ---------------
   // we want to load data from the file system and not want to make an http request
   const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
-  const jsonData = fs.readFile(filePath);
+  const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
   return {
     props: {
