@@ -35,13 +35,33 @@ export async function getStaticProps() {
 
   // ---------------
   // we want to load data from the file system and not want to make an http request
+
+  // The code actually doesn't run on real server, but it runs on our local machine, when the application
+  // is built.
+
   const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
+  // return {
+  //   props: {
+  //     // products: [{ id: "p1", title: "Product 1" }],
+  //     products: data.products,
+  //   },
+  // };
+
+  // It has one downside, if our data changes quickly
+
+  // Incremental Static Re-Generation (ISR): It means that we don't generate our pages statically once
+  // at the build time, but it is continuosly updated even after deployment without,
+  // redeploying it.
+
+  // To have ISR we just have to add "revalidate" Key to our return object
+
   return {
     props: {
       // products: [{ id: "p1", title: "Product 1" }],
       products: data.products,
     },
+    revalidate: 10, // re-creates page at every 10 seconds
   };
 }
