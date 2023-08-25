@@ -57,11 +57,24 @@ export async function getStaticProps() {
 
   // To have ISR we just have to add "revalidate" Key to our return object
 
+  if (!data) {
+    return {
+      redirect: "/no-data-route",
+    };
+  }
+  if (data.products.length === 0) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       // products: [{ id: "p1", title: "Product 1" }],
       products: data.products,
     },
     revalidate: 10, // re-creates page at every 10 seconds
+    // notFound: true // If true than this page returns 404 (Not Found) Error
+    // redirect : 'route-to-redirect' // Instead of rendering the component the user will be redirected to this route
   };
 }
