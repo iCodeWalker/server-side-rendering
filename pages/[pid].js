@@ -30,15 +30,22 @@ const ProductDetail = (props) => {
   );
 };
 
+async function getData() {
+  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData);
+
+  return data;
+}
+
 export async function getStaticProps(context) {
   const { params } = context;
   // We use params to get access to the concrete values encoded in the url
 
   const productId = params.pid;
 
-  const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
-  const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData);
+  const data = await getData();
+
   const product = data.products.find((item) => item.id === productId);
 
   return {
@@ -51,42 +58,49 @@ export async function getStaticProps(context) {
 // "getStaticPaths" Tells next js, which instances of the dynamic pages should be generated
 
 export async function getStaticPaths() {
+  const data = await getData();
+
+  const ids = data.products.map((product) => product.id);
+
+  const pathWithParams = ids.map((id) => ({ params: { pid: id } }));
   return {
-    paths: [
-      {
-        params: {
-          pid: "p1",
-        },
-      },
-      {
-        params: {
-          pid: "p2",
-        },
-      },
-      //   {
-      //     params: {
-      //       pid: "p3",
-      //     },
-      //   },
-      //   {
-      //     params: {
-      //       pid: "p4",
-      //     },
-      //   },
-      //   {
-      //     params: {
-      //       pid: "p5",
-      //     },
-      //   },
-      //   {
-      //     params: {
-      //       pid: "p6",
-      //     },
-      //   },
-    ],
+    path: pathWithParams,
+    fallback: false,
+    // paths: [
+    //   {
+    //     params: {
+    //       pid: "p1",
+    //     },
+    //   },
+    //   {
+    //     params: {
+    //       pid: "p2",
+    //     },
+    //   },
+    //   {
+    //     params: {
+    //       pid: "p3",
+    //     },
+    //   },
+    //   {
+    //     params: {
+    //       pid: "p4",
+    //     },
+    //   },
+    //   {
+    //     params: {
+    //       pid: "p5",
+    //     },
+    //   },
+    //   {
+    //     params: {
+    //       pid: "p6",
+    //     },
+    //   },
+    // ],
     // fallback: false, // fallback key helps when we have a lot of pages to pre-generate
     // fallback: true, // pregenerates only selected pages with id, but also generates pages at the time the link is visited
-    fallback: "blocking", // If this, than we don't need the fallback check for component rendering. It will take time to get the response, but when the response is sent back it is finished.
+    // fallback: "blocking", // If this, than we don't need the fallback check for component rendering. It will take time to get the response, but when the response is sent back it is finished.
   };
 }
 
