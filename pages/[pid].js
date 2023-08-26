@@ -18,9 +18,9 @@ const ProductDetail = (props) => {
 
   console.log(props, "props");
 
-  //   if (!loadedProduct) {
-  //     return <p>Loading...</p>;
-  //   }
+  if (!loadedProduct) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Fragment>
@@ -48,6 +48,10 @@ export async function getStaticProps(context) {
 
   const product = data.products.find((item) => item.id === productId);
 
+  if (!product) {
+    return { notFound: true };
+  }
+
   return {
     props: {
       loadedProduct: product,
@@ -63,9 +67,12 @@ export async function getStaticPaths() {
   const ids = data.products.map((product) => product.id);
 
   const pathWithParams = ids.map((id) => ({ params: { pid: id } }));
+
   return {
-    path: pathWithParams,
-    fallback: false,
+    paths: pathWithParams,
+    fallback: true, // we tell next.js that even if an id value is not found here,
+    // we still might be able to render a page.
+
     // paths: [
     //   {
     //     params: {
