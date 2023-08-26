@@ -17,6 +17,11 @@ const ProductDetail = (props) => {
   const { loadedProduct } = props;
 
   console.log(props, "props");
+
+  //   if (!loadedProduct) {
+  //     return <p>Loading...</p>;
+  //   }
+
   return (
     <Fragment>
       <h1>{loadedProduct.title}</h1>
@@ -58,28 +63,30 @@ export async function getStaticPaths() {
           pid: "p2",
         },
       },
-      {
-        params: {
-          pid: "p3",
-        },
-      },
-      {
-        params: {
-          pid: "p4",
-        },
-      },
-      {
-        params: {
-          pid: "p5",
-        },
-      },
-      {
-        params: {
-          pid: "p6",
-        },
-      },
+      //   {
+      //     params: {
+      //       pid: "p3",
+      //     },
+      //   },
+      //   {
+      //     params: {
+      //       pid: "p4",
+      //     },
+      //   },
+      //   {
+      //     params: {
+      //       pid: "p5",
+      //     },
+      //   },
+      //   {
+      //     params: {
+      //       pid: "p6",
+      //     },
+      //   },
     ],
-    fallback: false,
+    // fallback: false, // fallback key helps when we have a lot of pages to pre-generate
+    // fallback: true, // pregenerates only selected pages with id, but also generates pages at the time the link is visited
+    fallback: "blocking", // If this, than we don't need the fallback check for component rendering. It will take time to get the response, but when the response is sent back it is finished.
   };
 }
 
